@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.count {
+  font-size: 50px;
+  color: tomato;
+  height: 300px;
+}
+
+.row {
+  min-height: 300px;
+  padding: 30px;
+}
+
+.tweetImage {
+  max-width: 100%;
+  height: auto;
+}
