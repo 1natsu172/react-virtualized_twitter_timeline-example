@@ -138,10 +138,6 @@ export default class RVComponents extends React.Component {
   }
 
   _onResize = ({ width }) => {
-    console.log(width)
-    console.log(this._mostRecentWidth)
-    console.log(this._resizeAllFlag)
-
     if (this._mostRecentWidth && this._mostRecentWidth !== width) {
       this._resizeAllFlag = true
       process.nextTick(this._reSizeAllRender)
@@ -151,7 +147,7 @@ export default class RVComponents extends React.Component {
   }
 
   _reSizeAllRender = () => {
-    console.warn('RECALC!')
+    console.warn('RESIZE!')
 
     this._resizeAllFlag = false
     this._renderCache.clearAll()
