@@ -94,56 +94,58 @@ export default class RVComponents extends React.Component {
 
     return (
       <div>
-        <div className="count">Total tweets: {this.state.tweets.length}</div>
-        <InfiniteLoader
-          isRowLoaded={this._isRowLoaded}
-          loadMoreRows={this._loadMoreRows}
-          ref={el => (this._renderInfiniteLoaderRef = el)}
-          rowCount={this._rowCount()}
-          threshold={0}
-          minimumBatchSize={1}>
-          {({ onRowsRendered, registerChild }) => (
-            <WindowScroller>
-              {({ height, isScrolling, scrollTop, onChildScroll }) => (
-                <AutoSizer disableHeight={true}>
-                  {({ width }) => {
-                    // Recalculate when width resize occurs
-                    if (
-                      this._mostRecentWidth &&
-                      this._mostRecentWidth !== width
-                    ) {
-                      this._resizeAllFlag = true
-                      process.nextTick(this._reSizeAllRender)
-                    }
+        <div className="count">Loaded tweets: {this.state.tweets.length}</div>
+        <div className="infWrapper">
+          <InfiniteLoader
+            isRowLoaded={this._isRowLoaded}
+            loadMoreRows={this._loadMoreRows}
+            ref={el => (this._renderInfiniteLoaderRef = el)}
+            rowCount={this._rowCount()}
+            threshold={0}
+            minimumBatchSize={1}>
+            {({ onRowsRendered, registerChild }) => (
+              <WindowScroller>
+                {({ height, isScrolling, scrollTop, onChildScroll }) => (
+                  <AutoSizer disableHeight={true}>
+                    {({ width }) => {
+                      // Recalculate when width resize occurs
+                      if (
+                        this._mostRecentWidth &&
+                        this._mostRecentWidth !== width
+                      ) {
+                        this._resizeAllFlag = true
+                        process.nextTick(this._reSizeAllRender)
+                      }
 
-                    this._mostRecentWidth = width
+                      this._mostRecentWidth = width
 
-                    return (
-                      <List
-                        autoHeight={true}
-                        deferredMeasurementCache={this._renderCache}
-                        height={height}
-                        isScrolling={isScrolling}
-                        onRowsRendered={onRowsRendered}
-                        onScroll={onChildScroll}
-                        overscanRowCount={5}
-                        ref={el => {
-                          this._renderListRef = el
-                          registerChild(el)
-                        }}
-                        rowHeight={this._renderCache.rowHeight}
-                        rowRenderer={this._renderRow}
-                        rowCount={this._rowCount() + 1}
-                        scrollTop={scrollTop}
-                        width={width}
-                      />
-                    )
-                  }}
-                </AutoSizer>
-              )}
-            </WindowScroller>
-          )}
-        </InfiniteLoader>
+                      return (
+                        <List
+                          autoHeight={true}
+                          deferredMeasurementCache={this._renderCache}
+                          height={height}
+                          isScrolling={isScrolling}
+                          onRowsRendered={onRowsRendered}
+                          onScroll={onChildScroll}
+                          overscanRowCount={5}
+                          ref={el => {
+                            this._renderListRef = el
+                            registerChild(el)
+                          }}
+                          rowHeight={this._renderCache.rowHeight}
+                          rowRenderer={this._renderRow}
+                          rowCount={this._rowCount() + 1}
+                          scrollTop={scrollTop}
+                          width={width}
+                        />
+                      )
+                    }}
+                  </AutoSizer>
+                )}
+              </WindowScroller>
+            )}
+          </InfiniteLoader>
+        </div>
       </div>
     )
   }
