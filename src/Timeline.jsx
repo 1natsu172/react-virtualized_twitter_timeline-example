@@ -19,12 +19,14 @@ export default class RVComponents extends React.Component {
 
   state = {
     tweets: listItems,
-    isLoading: false
+    isLoading: false,
+    hasMore: true
   }
 
   componentDidUpdate(prevProps, prevState) {
     const prevTweetList = prevState.tweets
     const updatedTweetList = this.state.tweets
+    console.log('hasmore', this.state.hasMore)
 
     if (this._resizeAllFlag) this._reSizeAllRender()
 
@@ -34,10 +36,13 @@ export default class RVComponents extends React.Component {
     }
   }
 
-  _rowCount = () =>
-    !this.state.isLoading
+  _infiniteRowCount = () =>
+    !this.state.isLoading && this.state.hasMore
       ? this.state.tweets.length + 1
       : this.state.tweets.length
+
+  _listRowCount = () =>
+    this.state.hasMore ? this.state.tweets.length + 1 : this.state.tweets.length
 
   _loadMoreRows = this.state.isLoading
     ? () => Promise.resolve()
@@ -48,11 +53,13 @@ export default class RVComponents extends React.Component {
           })
 
           const prevTweets = this.state.tweets
+          const nextTweets = [...prevTweets, ...listItems]
 
           setTimeout(() => {
             this.setState({
-              tweets: [...prevTweets, ...listItems],
-              isLoading: false
+              tweets: nextTweets,
+              isLoading: false,
+              hasMore: nextTweets.length < 80 ? true : false
             })
           }, 600)
         })
@@ -100,7 +107,7 @@ export default class RVComponents extends React.Component {
             isRowLoaded={this._isRowLoaded}
             loadMoreRows={this._loadMoreRows}
             ref={el => (this._renderInfiniteLoaderRef = el)}
-            rowCount={this._rowCount()}
+            rowCount={this._infiniteRowCount()}
             threshold={0}
             minimumBatchSize={1}>
             {({ onRowsRendered, registerChild }) => (
@@ -122,7 +129,7 @@ export default class RVComponents extends React.Component {
                         }}
                         rowHeight={this._renderCache.rowHeight}
                         rowRenderer={this._renderRow}
-                        rowCount={this._rowCount() + 1}
+                        rowCount={this._listRowCount()}
                         scrollTop={scrollTop}
                         width={width}
                       />
