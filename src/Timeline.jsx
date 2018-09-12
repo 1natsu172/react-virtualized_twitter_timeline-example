@@ -106,40 +106,27 @@ export default class RVComponents extends React.Component {
             {({ onRowsRendered, registerChild }) => (
               <WindowScroller>
                 {({ height, isScrolling, scrollTop, onChildScroll }) => (
-                  <AutoSizer disableHeight={true}>
-                    {({ width }) => {
-                      // Recalculate when width resize occurs
-                      if (
-                        this._mostRecentWidth &&
-                        this._mostRecentWidth !== width
-                      ) {
-                        this._resizeAllFlag = true
-                        process.nextTick(this._reSizeAllRender)
-                      }
-
-                      this._mostRecentWidth = width
-
-                      return (
-                        <List
-                          autoHeight={true}
-                          deferredMeasurementCache={this._renderCache}
-                          height={height}
-                          isScrolling={isScrolling}
-                          onRowsRendered={onRowsRendered}
-                          onScroll={onChildScroll}
-                          overscanRowCount={5}
-                          ref={el => {
-                            this._renderListRef = el
-                            registerChild(el)
-                          }}
-                          rowHeight={this._renderCache.rowHeight}
-                          rowRenderer={this._renderRow}
-                          rowCount={this._rowCount() + 1}
-                          scrollTop={scrollTop}
-                          width={width}
-                        />
-                      )
-                    }}
+                  <AutoSizer disableHeight={true} onResize={this._onResize}>
+                    {({ width }) => (
+                      <List
+                        autoHeight={true}
+                        deferredMeasurementCache={this._renderCache}
+                        height={height}
+                        isScrolling={isScrolling}
+                        onRowsRendered={onRowsRendered}
+                        onScroll={onChildScroll}
+                        overscanRowCount={5}
+                        ref={el => {
+                          this._renderListRef = el
+                          registerChild(el)
+                        }}
+                        rowHeight={this._renderCache.rowHeight}
+                        rowRenderer={this._renderRow}
+                        rowCount={this._rowCount() + 1}
+                        scrollTop={scrollTop}
+                        width={width}
+                      />
+                    )}
                   </AutoSizer>
                 )}
               </WindowScroller>
@@ -148,6 +135,19 @@ export default class RVComponents extends React.Component {
         </div>
       </div>
     )
+  }
+
+  _onResize = ({ width }) => {
+    console.log(width)
+    console.log(this._mostRecentWidth)
+    console.log(this._resizeAllFlag)
+
+    if (this._mostRecentWidth && this._mostRecentWidth !== width) {
+      this._resizeAllFlag = true
+      process.nextTick(this._reSizeAllRender)
+    }
+
+    this._mostRecentWidth = width
   }
 
   _reSizeAllRender = () => {
